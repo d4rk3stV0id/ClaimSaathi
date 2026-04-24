@@ -64,7 +64,7 @@ const StepIndicator = ({ currentStep }: { currentStep: WizardStep }) => {
               }
               className={cn(
                 'relative z-10 flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-all duration-500',
-                n > step ? 'bg-primary text-white' : n === step ? 'bg-primary text-white shadow-glow' : 'bg-gray-100 text-gray-400',
+                n > step ? 'bg-primary text-white' : n === step ? 'bg-primary text-white shadow-glow' : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-slate-300',
               )}
             >
               {n > step ? <Check size={20} /> : step}
@@ -74,7 +74,7 @@ const StepIndicator = ({ currentStep }: { currentStep: WizardStep }) => {
             )}
           </div>
           {idx < steps.length - 1 && (
-            <div className="relative flex-1 overflow-hidden bg-gray-100 h-0.5">
+            <div className="relative h-0.5 flex-1 overflow-hidden bg-gray-200 dark:bg-white/10">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: n > step ? '100%' : '0%' }}
@@ -91,7 +91,7 @@ const StepIndicator = ({ currentStep }: { currentStep: WizardStep }) => {
 function confidenceStyles(c: string) {
   if (c === 'high') return 'bg-emerald-100 text-emerald-800';
   if (c === 'low') return 'bg-amber-100 text-amber-800';
-  return 'bg-slate-100 text-slate-600';
+  return 'bg-slate-100 text-slate-700 dark:bg-slate-700/40 dark:text-slate-200';
 }
 
 export const ClaimWizardView = () => {
@@ -325,7 +325,7 @@ export const ClaimWizardView = () => {
             type="button"
             onClick={goBack}
             disabled={isProcessing}
-            className="text-navy disabled:opacity-40"
+            className="text-navy dark:text-slate-200 disabled:opacity-40"
             aria-label="Go back"
           >
             <ArrowLeft />
@@ -415,11 +415,11 @@ export const ClaimWizardView = () => {
                           </>
                         ) : (
                           <>
-                            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50 text-gray-400">
+                            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-slate-300">
                               <Icon size={20} />
                             </div>
-                            <p className="text-xs font-bold text-navy">{doc.label}</p>
-                            <p className="mt-1 text-[10px] italic text-text-muted">PDF or photo — tap to upload</p>
+                            <p className="text-xs font-bold text-text-main dark:text-slate-100">{doc.label}</p>
+                            <p className="mt-1 text-[11px] italic text-slate-600 dark:text-slate-300">PDF or photo — tap to upload</p>
                           </>
                         )}
                       </button>
@@ -427,7 +427,7 @@ export const ClaimWizardView = () => {
                         <button
                           type="button"
                           onClick={(e) => clearMedical(doc.key, e)}
-                          className="absolute right-2 top-2 rounded p-1 text-gray-300 hover:text-danger"
+                          className="absolute right-2 top-2 rounded p-1 text-gray-400 hover:text-danger dark:text-slate-400"
                           aria-label={`Remove ${doc.label}`}
                         >
                           <Trash2 size={14} />
@@ -445,7 +445,7 @@ export const ClaimWizardView = () => {
                 onClick={continueFromStep1}
                 className={cn(
                   'flex w-full items-center justify-center gap-2 rounded-full py-4 font-display text-lg font-bold transition-all',
-                  allMedicalUploaded ? 'bg-primary text-white shadow-glow' : 'cursor-not-allowed bg-gray-200 text-gray-400',
+                  allMedicalUploaded ? 'bg-primary text-white shadow-glow' : 'cursor-not-allowed bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-slate-400',
                 )}
               >
                 Continue
@@ -487,7 +487,7 @@ export const ClaimWizardView = () => {
                     </>
                   ) : (
                     <>
-                      <p className="font-display font-bold text-navy">Choose claim form file</p>
+                      <p className="font-display font-bold text-navy dark:text-slate-100">Choose claim form file</p>
                       <p className="text-xs text-text-muted">PDF or image, same as your insurer gave you</p>
                     </>
                   )}
@@ -496,7 +496,7 @@ export const ClaimWizardView = () => {
                   <button
                     type="button"
                     onClick={clearForm}
-                    className="absolute right-3 top-3 rounded p-2 text-gray-300 hover:text-danger"
+                    className="absolute right-3 top-3 rounded p-2 text-gray-400 hover:text-danger dark:text-slate-400"
                     aria-label="Remove file"
                   >
                     <Trash2 size={16} />
@@ -513,7 +513,7 @@ export const ClaimWizardView = () => {
                   'flex w-full items-center justify-center gap-2 rounded-full py-4 font-display text-lg font-bold transition-all',
                   claimFormFile && !isProcessing
                     ? 'bg-primary text-white shadow-glow'
-                    : 'cursor-not-allowed bg-gray-200 text-gray-400',
+                    : 'cursor-not-allowed bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-slate-400',
                 )}
               >
                 Continue
@@ -532,11 +532,11 @@ export const ClaimWizardView = () => {
                   <h3 className="font-display text-lg font-bold text-text-main">
                     {filledInsurerPdfUrl ? 'Your claim form (filled)' : 'Review extracted answers'}
                   </h3>
-                  <span className="rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100">
+                  <span className="rounded bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:bg-amber-300/20 dark:text-amber-200">
                     AI draft — verify
                   </span>
                 </div>
-                <p className="text-sm text-text-muted">
+                <p className="text-sm text-slate-600 dark:text-slate-300">
                   {filledInsurerPdfUrl
                     ? 'This is the same insurer PDF with values written into the form fields. Scroll every page, then download or save to your claims when you are satisfied.'
                     : 'This upload has no fillable PDF fields (e.g. it is a scan or image). We still extracted answers below — use the summary PDF, or upload the insurer’s fillable PDF to see the form filled in place.'}
@@ -544,7 +544,7 @@ export const ClaimWizardView = () => {
               </div>
 
               {filledInsurerPdfUrl ? (
-                <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-card">
+                <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-card dark:border-white/10 dark:bg-slate-900/40">
                   <iframe
                     title="Filled insurer claim form"
                     src={`${filledInsurerPdfUrl}#view=FitH`}
@@ -553,29 +553,29 @@ export const ClaimWizardView = () => {
                 </div>
               ) : null}
 
-              <details className="group rounded-xl border border-gray-200 bg-surface/60 shadow-sm open:shadow-md">
-                <summary className="cursor-pointer list-none px-4 py-3 font-display text-sm font-bold text-navy marker:content-none [&::-webkit-details-marker]:hidden">
+              <details className="group rounded-xl border border-gray-200 bg-surface/60 shadow-sm open:shadow-md dark:border-white/10 dark:bg-slate-900/20">
+                <summary className="cursor-pointer list-none px-4 py-3 font-display text-sm font-bold text-navy marker:content-none dark:text-slate-100 [&::-webkit-details-marker]:hidden">
                   <span className="flex items-center justify-between gap-2">
                     <span>Text breakdown, amount &amp; sources</span>
                     <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-open:rotate-90" />
                   </span>
                 </summary>
-                <div className="space-y-4 border-t border-gray-100 px-4 py-4">
+                <div className="space-y-4 border-t border-gray-100 px-4 py-4 dark:border-white/10">
                   {draft.fields.map((field, i) => (
                     <motion.div
                       key={`${field.id}-${i}`}
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: Math.min(i * 0.03, 0.35) }}
-                      className="relative rounded-lg border border-gray-100 bg-white/90 p-4 pl-5"
+                      className="relative rounded-lg border border-gray-100 bg-white/90 p-4 pl-5 dark:border-white/10 dark:bg-slate-900/30"
                     >
                       <div className="absolute bottom-0 left-0 top-0 w-1 rounded-full bg-amber-400/70" />
                       <div className="flex flex-wrap items-start justify-between gap-2 pl-2">
                         <div className="min-w-0 flex-1 space-y-1">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">{field.label}</p>
-                          <p className="text-base font-medium text-navy">{field.value || '—'}</p>
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">{field.label}</p>
+                          <p className="text-base font-medium text-navy dark:text-slate-100">{field.value || '—'}</p>
                           {field.source ? (
-                            <p className="text-[11px] text-text-muted">Source: {field.source}</p>
+                            <p className="text-xs text-slate-600 dark:text-slate-300">Source: {field.source}</p>
                           ) : null}
                         </div>
                         <span
@@ -602,7 +602,7 @@ export const ClaimWizardView = () => {
                   </div>
 
                   {draft.caveats.length > 0 && (
-                    <ul className="list-disc space-y-1 rounded-lg border border-gray-100 bg-gray-50/80 p-4 pl-8 text-sm text-text-muted">
+                    <ul className="list-disc space-y-1 rounded-lg border border-gray-100 bg-gray-50/80 p-4 pl-8 text-sm text-text-muted dark:border-white/10 dark:bg-white/5">
                       {draft.caveats.map((c, i) => (
                         <li key={i}>{c}</li>
                       ))}
@@ -611,7 +611,7 @@ export const ClaimWizardView = () => {
                 </div>
               </details>
 
-              <div className="space-y-3 border-t border-gray-100 pt-6">
+              <div className="space-y-3 border-t border-gray-100 pt-6 dark:border-white/10">
                 {filledInsurerPdfBlob ? (
                   <button
                     type="button"
@@ -678,7 +678,7 @@ export const ClaimWizardView = () => {
 
               <h3 className="mb-2 font-display text-2xl font-bold text-text-main">Draft saved</h3>
               <p className="mb-10 max-w-sm text-sm text-text-muted">
-                Claim reference <span className="font-mono font-semibold text-navy">{filedClaimId}</span>. Use your
+                Claim reference <span className="font-mono font-semibold text-navy dark:text-slate-100">{filedClaimId}</span>. Use your
                 insurer&apos;s official channel to file; this app does not submit to the insurer for you.
               </p>
 

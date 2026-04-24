@@ -96,9 +96,11 @@ export async function insertClaimForUser(userId: string, claim: Claim): Promise<
     description: claim.description ?? null,
     rejection_reason: claim.rejectionReason ?? null,
     created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 
-  const { error } = await supabase.from('claims').insert(payload);
+  // Use upsert to make retries safe if the same claim id is submitted twice.
+  const { error } = await supabase.from('claims').upsert(payload, { onConflict: 'claim_id' });
   if (error) throw error;
 }
 

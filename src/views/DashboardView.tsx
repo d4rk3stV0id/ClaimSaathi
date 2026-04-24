@@ -12,8 +12,8 @@ export const DashboardView = () => {
   const actions = [
     { id: 'policy', label: 'Read My Policy', icon: BookOpen, desc: 'View coverage & rules', color: 'bg-primary/10 text-primary', tab: 'policy' },
     { id: 'file', label: 'File a Claim', icon: ShieldCheck, desc: 'Start a new claim', color: 'bg-accent/10 text-accent', tab: 'claims' },
-    { id: 'track', label: 'Track Claim', icon: Activity, desc: 'Check claim status', color: 'bg-indigo-100 text-indigo-600', tab: 'claims' },
-    { id: 'ask', label: 'Ask AI', icon: MessageCircle, desc: 'Chat with ClaimSaathi', color: 'bg-navy/10 text-navy', tab: 'policy' },
+    { id: 'track', label: 'Track Claim', icon: Activity, desc: 'Check claim status', color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-400/20 dark:text-indigo-200', tab: 'claims' },
+    { id: 'ask', label: 'Ask AI', icon: MessageCircle, desc: 'Chat with ClaimSaathi', color: 'bg-navy/10 text-navy dark:bg-white/10 dark:text-slate-100', tab: 'policy' },
   ];
 
   return (
@@ -159,8 +159,8 @@ export const DashboardView = () => {
                 </motion.div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-16 text-center text-text-muted">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 dark:bg-white/5">
-                    <BookOpen size={32} className="text-gray-300 dark:text-slate-500" />
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-white/10">
+                    <BookOpen size={32} className="text-gray-400 dark:text-slate-300" />
                   </div>
                   <p className="text-sm font-medium">No recent activity</p>
                 </div>

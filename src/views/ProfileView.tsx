@@ -208,7 +208,7 @@ export const ProfileView = () => {
                                />
                             </div>
                           ) : (
-                            <ChevronRight size={16} className="text-gray-300" />
+                            <ChevronRight size={16} className="text-gray-400 dark:text-slate-400" />
                           )}
                        </div>
                     </button>
