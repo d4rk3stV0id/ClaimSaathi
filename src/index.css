@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora", sans-serif;
+
+  --color-primary: #0EA5A0;
+  --color-primary-dark: #0C7A76;
+  --color-primary-light: #E0FAF9;
+  --color-accent: #F97316;
+  --color-accent-light: #FFF4EE;
+  --color-navy: #0F1E3D;
+  --color-navy-light: #1A2F5A;
+  --color-success: #16A34A;
+  --color-warning: #F59E0B;
+  --color-danger: #DC2626;
+  --color-background: #F0F7F7;
+  --color-surface: #FFFFFF;
+  --color-text-main: #334155;
+  --color-text-muted: #64748B;
+
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 24px rgba(14, 165, 160, 0.4);
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text-main font-sans transition-colors duration-300;
+  }
+}
+
+.dark {
+  --color-background: #0F1E3D;
+  --color-surface: #1A2F5A;
+  --color-text-main: #F8FAFC;
+  --color-text-muted: #94A3B8;
+  --color-gray-100: rgba(255, 255, 255, 0.05);
+  --color-gray-50: rgba(255, 255, 255, 0.02);
+}
+
+@keyframes breathing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-breathing {
+  animation: breathing 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes policy-scan-shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+.policy-analysis-shimmer {
+  position: relative;
+  height: 6px;
+  width: 100%;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 9999px;
+  background: rgba(14, 165, 160, 0.12);
+  overflow: hidden;
+}
+
+.policy-analysis-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 45%;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #0ea5a0,
+    #f97316,
+    transparent
+  );
+  animation: policy-scan-shimmer 1.35s ease-in-out infinite;
+}
+
+.dark .policy-analysis-shimmer {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
