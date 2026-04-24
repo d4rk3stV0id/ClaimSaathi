@@ -78,3 +78,8 @@ create policy "Users can delete own claims"
 on public.claims
 for delete
 using (auth.uid() = user_id);
+
+-- Required for browser clients: PostgREST uses the `authenticated` role when a user JWT is present.
+-- Without these grants, inserts can fail with "permission denied" even when RLS policies exist.
+grant select, insert, update, delete on table public.claims to authenticated;
+grant select, insert, update, delete on table public.policies to authenticated;

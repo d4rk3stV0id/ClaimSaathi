@@ -86,22 +86,38 @@ export async function fetchPolicyForUser(userId: string): Promise<Policy | null>
 
 export async function insertClaimForUser(userId: string, claim: Claim): Promise<void> {
   if (!isSupabaseEnabled) return;
+  const { data: authData, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) throw sessionError;
+  const uid = authData.session?.user?.id;
+  if (!uid) {
+    throw new Error('No active Supabase session — sign in again, then save the claim.');
+  }
+  if (uid !== userId) {
+    throw new Error('Signed-in user does not match claim owner — sign out and sign in again.');
+  }
+
+  const amount = Number.isFinite(claim.amount) ? Math.max(0, claim.amount) : 0;
+  // Let DB defaults fill timestamps so older tables (without updated_at) still accept rows.
   const payload = {
     user_id: userId,
     claim_id: claim.id,
     title: claim.title,
     filed_date: claim.date || null,
-    amount: claim.amount,
+    amount,
     status: claim.status,
     description: claim.description ?? null,
     rejection_reason: claim.rejectionReason ?? null,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
   };
 
-  // Use upsert to make retries safe if the same claim id is submitted twice.
-  const { error } = await supabase.from('claims').upsert(payload, { onConflict: 'claim_id' });
-  if (error) throw error;
+  // Prefer insert for new claims (RLS is simpler than upsert merge). Retry once with upsert on duplicate id.
+  const { error: insertError } = await supabase.from('claims').insert(payload);
+  if (!insertError) return;
+  if (insertError.code === '23505') {
+    const { error: upsertError } = await supabase.from('claims').upsert(payload, { onConflict: 'claim_id' });
+    if (upsertError) throw upsertError;
+    return;
+  }
+  throw insertError;
 }
 
 export async function fetchClaimsForUser(userId: string): Promise<Claim[]> {

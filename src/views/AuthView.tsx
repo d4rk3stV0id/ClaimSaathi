@@ -9,7 +9,7 @@ import { useStore } from '../store/useStore';
 export const AuthView = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const { setOnboarded } = useStore();
+  const { setOnboarded, setSession } = useStore();
 
   const { register, handleSubmit, formState: { errors }, watch, reset } = useForm();
 
@@ -25,11 +25,16 @@ export const AuthView = () => {
       await supabase.auth.signOut({ scope: 'local' });
 
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data: authData, error } = await supabase.auth.signInWithPassword({
           email: data.email,
           password: data.password,
         });
         authError = error;
+        // Apply session immediately so the app gate does not render the dashboard before Zustand has a user id
+        // (otherwise claims would only update locally and never reach Supabase).
+        if (!error && authData.session) {
+          setSession(authData.session);
+        }
       } else {
         const { error } = await supabase.auth.signUp({
           email: data.email,

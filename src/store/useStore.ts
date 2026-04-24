@@ -1,7 +1,9 @@
 import { create } from 'zustand';
+import toast from 'react-hot-toast';
 import { User, Policy, Claim, Language } from '../types';
 import { Session } from '@supabase/supabase-js';
 import { fetchClaimsForUser, fetchPolicyForUser, insertClaimForUser, upsertPolicyForUser } from '../lib/claimsaathiDb';
+import { isSupabaseEnabled } from '../lib/supabase';
 
 interface AppState {
   user: User | null;
@@ -90,10 +92,19 @@ export const useStore = create<AppState>((set) => {
     addClaim: (claim) => {
       set((state) => ({ claims: [claim, ...state.claims] }));
       const userId = useStore.getState().session?.user?.id;
-      if (!userId) return;
-      void insertClaimForUser(userId, claim).catch((error) => {
-        console.warn('Could not save claim to database.', error);
-      });
+      if (!userId) {
+        if (isSupabaseEnabled) {
+          toast.error('Sign in to save claims to your account.');
+        }
+        return;
+      }
+      void insertClaimForUser(userId, claim)
+        .then(() => useStore.getState().hydrateUserData(userId))
+        .catch((error) => {
+          const message = error instanceof Error ? error.message : 'Could not save claim.';
+          console.warn('Could not save claim to database.', error);
+          toast.error(message);
+        });
     },
     toggleTheme: () => set((state) => {
       const newTheme = state.theme === 'light' ? 'dark' : 'light';
