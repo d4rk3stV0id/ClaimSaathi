@@ -83,3 +83,44 @@ using (auth.uid() = user_id);
 -- Without these grants, inserts can fail with "permission denied" even when RLS policies exist.
 grant select, insert, update, delete on table public.claims to authenticated;
 grant select, insert, update, delete on table public.policies to authenticated;
+
+create table if not exists public.profiles (
+  id uuid primary key references auth.users (id) on delete cascade,
+  name text,
+  phone text,
+  avatar text,
+  language text,
+  abha_id text,
+  abha_verified boolean default false,
+  abha_name text,
+  abha_address text,
+  abha_dob text,
+  abha_gender text,
+  blood_group text,
+  emergency_contact text,
+  allergies text,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.profiles enable row level security;
+
+drop policy if exists "Users can read own profile" on public.profiles;
+create policy "Users can read own profile"
+on public.profiles
+for select
+using (auth.uid() = id);
+
+drop policy if exists "Users can upsert own profile" on public.profiles;
+create policy "Users can upsert own profile"
+on public.profiles
+for insert
+with check (auth.uid() = id);
+
+drop policy if exists "Users can update own profile" on public.profiles;
+create policy "Users can update own profile"
+on public.profiles
+for update
+using (auth.uid() = id)
+with check (auth.uid() = id);
+
+grant select, insert, update, delete on table public.profiles to authenticated;

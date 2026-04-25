@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import toast from 'react-hot-toast';
 import { User, Policy, Claim, Language } from '../types';
 import { Session } from '@supabase/supabase-js';
-import { fetchClaimsForUser, fetchPolicyForUser, insertClaimForUser, upsertPolicyForUser } from '../lib/claimsaathiDb';
+import { fetchClaimsForUser, fetchPolicyForUser, insertClaimForUser, upsertPolicyForUser, fetchProfileForUser, upsertProfileForUser } from '../lib/claimsaathiDb';
 import { isSupabaseEnabled } from '../lib/supabase';
 
 export interface Notification {
@@ -110,13 +110,23 @@ export const useStore = create<AppState>((set) => {
     setCurrentTab: (currentTab) => set({ currentTab }),
     hydrateUserData: async (userId) => {
       try {
-        const [policy, claims] = await Promise.all([
+        const [policy, claims, dbProfile] = await Promise.all([
           fetchPolicyForUser(userId),
           fetchClaimsForUser(userId),
+          fetchProfileForUser(userId),
         ]);
-        set({ activePolicy: policy, claims });
+        
+        // Merge dbProfile into local user if it exists
+        if (dbProfile) {
+          const state = useStore.getState();
+          const mergedUser = { ...state.user, ...dbProfile } as User;
+          saveUserProfile(mergedUser);
+          set({ activePolicy: policy, claims, user: mergedUser });
+        } else {
+          set({ activePolicy: policy, claims });
+        }
       } catch (error) {
-        console.warn('Could not hydrate user policy/claims from database.', error);
+        console.warn('Could not hydrate user data from database.', error);
       }
     },
     applyPolicyAnalysis: async (policy, document) => {
@@ -152,12 +162,23 @@ export const useStore = create<AppState>((set) => {
       localStorage.setItem('claimsaathi-theme', newTheme);
       return { theme: newTheme };
     }),
-    updateUserProfile: (fields) => set((state) => {
-      const base = state.user || { name: 'User', phone: '', email: '' };
-      const updated = { ...base, ...fields };
-      saveUserProfile(updated);
-      return { user: updated };
-    }),
+    updateUserProfile: (fields) => {
+      set((state) => {
+        const base = state.user || { name: 'User', phone: '', email: '' };
+        const updated = { ...base, ...fields } as User;
+        saveUserProfile(updated);
+        
+        // Sync to Supabase if logged in
+        const userId = state.session?.user?.id;
+        if (userId) {
+          upsertProfileForUser(userId, updated).catch(err => {
+            console.warn('Could not sync profile to database.', err);
+          });
+        }
+        
+        return { user: updated };
+      });
+    },
     markNotificationRead: (id) => set((state) => ({
       notifications: state.notifications.map((n) =>
         n.id === id ? { ...n, read: true } : n,

@@ -150,11 +150,8 @@ export const DashboardView = () => {
 
         <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
           <div className="max-w-xl space-y-2">
-            <div className="mb-6 flex items-center gap-3 lg:hidden">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                <ShieldCheck className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-display text-xl font-bold tracking-tight text-white">ClaimSaathi</span>
+            <div className="mb-8 flex items-center gap-3">
+              <img src="/logo.png" alt="ClaimSaathi" className="h-24 w-auto object-contain drop-shadow-md brightness-0 invert" />
             </div>
             <h2 className="text-3xl font-display font-bold tracking-tight text-white lg:text-4xl">
               Namaste, {user?.name?.split(' ')[0] || 'User'} 👋

@@ -20,38 +20,10 @@ export const SplashView = () => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="relative w-24 h-24 mb-6"
+          className="mb-6 flex flex-col items-center"
         >
-          <div className="absolute inset-0 bg-primary/20 rounded-xl rotate-12" />
-          <div className="absolute inset-0 bg-primary rounded-xl flex items-center justify-center">
-            <Shield className="text-white w-12 h-12" />
-            <motion.svg
-              viewBox="0 0 24 24"
-              className="absolute w-8 h-8 text-white mt-1 ml-1"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <motion.path
-                d="M5 13l4 4L19 7"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 0.8, delay: 0.5, ease: "easeInOut" }}
-              />
-            </motion.svg>
-          </div>
+          <img src="/logo.png" alt="ClaimSaathi" className="h-64 w-auto object-contain drop-shadow-xl rounded-2xl" />
         </motion.div>
-
-        <motion.h1
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-4xl font-display font-bold text-white mb-2"
-        >
-          ClaimSaathi
-        </motion.h1>
 
         <motion.p
           initial={{ y: 20, opacity: 0 }}

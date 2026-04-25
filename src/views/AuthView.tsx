@@ -111,15 +111,7 @@ export const AuthView = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-center mb-8"
         >
-          <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-xl border border-white/20 shadow-2xl mb-4 group hover:bg-white/20 transition-all duration-300">
-            <ShieldCheck className="w-10 h-10 text-indigo-400 group-hover:scale-110 transition-transform duration-300" />
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white to-indigo-300 text-center">
-            ClaimSaathi
-          </h1>
-          <p className="text-slate-400 mt-2 text-center text-sm font-medium tracking-wide">
-            Your Trusted Insurance Companion
-          </p>
+          <img src="/logo.png" alt="ClaimSaathi - Your Trusted Insurance Partner" className="h-48 w-auto object-contain drop-shadow-xl rounded-xl" />
         </motion.div>
 
         {/* Main Card */}

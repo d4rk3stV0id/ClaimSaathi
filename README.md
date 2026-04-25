@@ -7,12 +7,12 @@
 ## Features
 
 ### Policy Management
-- **AI Policy Reader** — Upload a PDF or image of your insurance policy; Gemini extracts coverage amounts, limits, exclusions, and disclaimers into a clean summary.
+- **Policy Reader** — Upload a PDF or image of your insurance policy; It extracts coverage amounts, limits, exclusions, and disclaimers into a clean summary.
 - **Policy Saathi Chat** — Ask natural-language questions about your uploaded policy (multilingual replies where supported).
 - **ABHA-Linked Policy Fetch** — Verify your 14-digit ABHA ID (Verhoeff checksum validation) and securely retrieve linked insurance details via a consent-based ABDM flow.
 
 ### Claims
-- **Guided Claim Wizard** — Upload hospital bill, discharge summary, ID proof, and insurer claim form; AI suggests field values and can fill **fillable PDF** forms when AcroForm fields are detected.
+- **Guided Claim Wizard** — Upload hospital bill, discharge summary, ID proof, and insurer claim form; It suggests field values and can fill **fillable PDF** forms when AcroForm fields are detected.
 - **Claims Tracking** — View all filed claims with status badges (Approved, Pending, Rejected) from the dashboard and profile.
 
 ### User Profile & Health Records

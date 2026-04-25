@@ -1,5 +1,5 @@
 import { isSupabaseEnabled, supabase } from './supabase';
-import type { Claim, Policy } from '../types';
+import type { Claim, Policy, User } from '../types';
 
 type PolicyRow = {
   policy_id: string;
@@ -131,4 +131,57 @@ export async function fetchClaimsForUser(userId: string): Promise<Claim[]> {
   if (error) throw error;
   if (!data) return [];
   return (data as ClaimRow[]).map(mapClaimRow);
+}
+
+export async function upsertProfileForUser(userId: string, profile: Partial<User>): Promise<void> {
+  if (!isSupabaseEnabled) return;
+  const payload = {
+    id: userId,
+    name: profile.name,
+    phone: profile.phone,
+    avatar: profile.avatar,
+    language: profile.language,
+    abha_id: profile.abhaId,
+    abha_verified: profile.abhaVerified,
+    abha_name: profile.abhaName,
+    abha_address: profile.abhaAddress,
+    abha_dob: profile.abhaDob,
+    abha_gender: profile.abhaGender,
+    blood_group: profile.bloodGroup,
+    emergency_contact: profile.emergencyContact,
+    allergies: profile.allergies,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase.from('profiles').upsert(payload, { onConflict: 'id' });
+  if (error) throw error;
+}
+
+export async function fetchProfileForUser(userId: string): Promise<Partial<User> | null> {
+  if (!isSupabaseEnabled) return null;
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) return null;
+  
+  return {
+    id: data.id,
+    name: data.name || undefined,
+    phone: data.phone || undefined,
+    avatar: data.avatar || undefined,
+    language: data.language || undefined,
+    abhaId: data.abha_id || undefined,
+    abhaVerified: data.abha_verified || false,
+    abhaName: data.abha_name || undefined,
+    abhaAddress: data.abha_address || undefined,
+    abhaDob: data.abha_dob || undefined,
+    abhaGender: data.abha_gender || undefined,
+    bloodGroup: data.blood_group || undefined,
+    emergencyContact: data.emergency_contact || undefined,
+    allergies: data.allergies || undefined,
+  };
 }
