@@ -62,7 +62,7 @@ export const PolicyReaderView = () => {
       setStatusText('Reading your document…');
       setChatMessages([]);
       try {
-        setStatusText('Reading your policy with Gemini…');
+        setStatusText('Reading your policy with offline model…');
         const { policy, document } = await analyzePolicyFromFile(file);
         setStatusText('Preparing your coverage overview…');
         await applyPolicyAnalysis(policy, document);

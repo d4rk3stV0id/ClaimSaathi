@@ -1,5 +1,5 @@
 import { Toaster } from 'react-hot-toast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from './store/useStore';
 import { AuthView } from './views/AuthView';
 import { clearSupabaseLocalSession, isSupabaseEnabled, supabase } from './lib/supabase';
@@ -11,7 +11,9 @@ import { ClaimTrackerView } from './views/ClaimTrackerView';
 import { ProfileView } from './views/ProfileView';
 
 export default function App() {
-  const { onboarded, currentTab, theme, session, isAuthenticated, setSession, hydrateUserData } = useStore();
+  const { currentTab, theme, session, isAuthenticated, setSession, hydrateUserData } = useStore();
+  /** Avoid showing login UI until the first getSession() finishes (prevents a one-frame “logged out” flash). */
+  const [supabaseAuthReady, setSupabaseAuthReady] = useState(!isSupabaseEnabled);
 
   useEffect(() => {
     if (!isSupabaseEnabled) return;
@@ -27,6 +29,8 @@ export default function App() {
         await supabase.auth.signOut({ scope: 'local' });
         if (mounted) setSession(null);
         console.warn('Supabase session recovery applied.', error);
+      } finally {
+        if (mounted) setSupabaseAuthReady(true);
       }
     })();
 
@@ -57,7 +61,15 @@ export default function App() {
     void hydrateUserData(userId);
   }, [session?.user?.id, hydrateUserData]);
 
-  if (isSupabaseEnabled && !isAuthenticated && !onboarded) {
+  if (isSupabaseEnabled && !supabaseAuthReady) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-text-muted">
+        <p className="text-sm font-medium">Signing you in…</p>
+      </div>
+    );
+  }
+
+  if (isSupabaseEnabled && !isAuthenticated) {
     return (
       <>
         <AuthView />

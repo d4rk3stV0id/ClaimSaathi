@@ -121,12 +121,12 @@ export const PolicyAnalysisLoader = ({ statusText }: { statusText: string }) => 
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.25 }}
-          className="min-h-[3rem] px-2 font-display text-base font-semibold text-[#0f1e3d] dark:text-slate-100"
+          className="min-h-[3rem] px-2 font-display text-base font-semibold text-text-main dark:text-slate-100"
         >
           {statusText}
         </motion.p>
       </AnimatePresence>
-      <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+      <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
         Extracting coverage, limits, and exclusions from your document…
       </p>
     </div>

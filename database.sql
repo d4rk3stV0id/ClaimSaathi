@@ -1,11 +1,13 @@
 -- Run in Supabase SQL editor to enable policy + claim persistence.
 
+create extension if not exists pgcrypto;
+
 create table if not exists public.policies (
   user_id uuid primary key references auth.users (id) on delete cascade,
   policy_id text not null,
   name text not null,
   insurer text not null,
-  coverage_amount numeric not null default 0,
+  coverage_amount numeric not null default 0 check (coverage_amount >= 0),
   validity_date text,
   status text not null default 'Active',
   covered text[] not null default '{}',
@@ -19,14 +21,16 @@ create table if not exists public.claims (
   user_id uuid not null references auth.users (id) on delete cascade,
   title text not null,
   filed_date text,
-  amount numeric not null default 0,
+  amount numeric not null default 0 check (amount >= 0),
   status text not null default 'Submitted',
   description text,
   rejection_reason text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create index if not exists idx_claims_user_id_created_at on public.claims (user_id, created_at desc);
+create index if not exists idx_claims_user_id_status on public.claims (user_id, status);
 
 alter table public.policies enable row level security;
 alter table public.claims enable row level security;
@@ -68,3 +72,14 @@ on public.claims
 for update
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
+
+drop policy if exists "Users can delete own claims" on public.claims;
+create policy "Users can delete own claims"
+on public.claims
+for delete
+using (auth.uid() = user_id);
+
+-- Required for browser clients: PostgREST uses the `authenticated` role when a user JWT is present.
+-- Without these grants, inserts can fail with "permission denied" even when RLS policies exist.
+grant select, insert, update, delete on table public.claims to authenticated;
+grant select, insert, update, delete on table public.policies to authenticated;

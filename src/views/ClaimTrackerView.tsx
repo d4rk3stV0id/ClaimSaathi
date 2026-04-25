@@ -26,7 +26,7 @@ export const ClaimTrackerView = () => {
     <div className="px-6 py-10 min-h-screen">
       <header className="mb-8">
         <h2 className="font-display font-bold text-xl mb-1">Track Claim</h2>
-        <p className="text-gray-400 text-sm">ID: CS-2938 | StarHealth Gold</p>
+        <p className="text-sm text-text-muted">ID: CS-2938 | StarHealth Gold</p>
       </header>
 
       {/* Main Status Timeline */}
@@ -38,7 +38,7 @@ export const ClaimTrackerView = () => {
               <div key={step.id} className="relative flex gap-6 pb-8">
                 {/* Connecting Line */}
                 {!isLast && (
-                  <div className="absolute left-4 top-8 bottom-0 w-0.5 bg-gray-100">
+                  <div className="absolute bottom-0 left-4 top-8 w-0.5 bg-gray-200 dark:bg-white/10">
                     {step.done && (
                       <motion.div 
                         initial={{ height: 0 }}
@@ -66,7 +66,7 @@ export const ClaimTrackerView = () => {
                        <Clock size={16} className="text-primary relative z-10" />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-300">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-white/10 dark:text-slate-400">
                        <Circle size={16} />
                     </div>
                   )}
@@ -76,12 +76,12 @@ export const ClaimTrackerView = () => {
                 <div className="flex-1 -mt-1">
                   <h4 className={cn(
                     "text-sm font-bold",
-                    step.done || step.current ? "text-navy" : "text-gray-400"
+                    step.done || step.current ? "text-navy dark:text-slate-100" : "text-gray-500 dark:text-slate-400"
                   )}>
                     {step.title}
                   </h4>
                   <p className="text-[10px] text-primary font-bold mt-0.5 uppercase tracking-wider">{step.date}</p>
-                  <p className="text-xs text-gray-400 mt-1 leading-relaxed">{step.desc}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-text-muted">{step.desc}</p>
                 </div>
               </div>
             );
@@ -128,13 +128,13 @@ export const ClaimTrackerView = () => {
       </div>
 
       {/* AI Help Section */}
-      <div className="mt-8 bg-surface p-5 rounded-lg border border-gray-100 flex items-start gap-4 shadow-card">
+      <div className="mt-8 flex items-start gap-4 rounded-lg border border-gray-200 bg-surface p-5 shadow-card dark:border-white/10">
          <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
             <AlertCircle size={20} />
          </div>
          <div className="space-y-2">
             <h4 className="font-display font-bold text-sm">Facing an issue?</h4>
-            <p className="text-xs text-gray-500">If your claim is stuck under review for more than 48 hours, our AI can help you draft an urgent query to the insurer.</p>
+            <p className="text-xs text-text-muted">If your claim is stuck under review for more than 48 hours, our AI can help you draft an urgent query to the insurer.</p>
             <button className="text-primary text-xs font-bold underline">Draft AI Query</button>
          </div>
       </div>

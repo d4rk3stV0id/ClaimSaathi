@@ -6,34 +6,10 @@ import toast from 'react-hot-toast';
 import { Lock, Mail, ArrowRight, Activity, ShieldCheck, User, Phone } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
-async function checkSupabaseReachable(timeoutMs = 7000): Promise<boolean> {
-  const controller = new AbortController();
-  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-    if (!anonKey) return false;
-    const url = `${import.meta.env.VITE_SUPABASE_URL}/auth/v1/health`;
-    await fetch(url, {
-      method: 'GET',
-      signal: controller.signal,
-      headers: {
-        apikey: anonKey,
-        Authorization: `Bearer ${anonKey}`,
-      },
-    });
-    // Any HTTP response means Supabase is reachable from this browser.
-    return true;
-  } catch {
-    return false;
-  } finally {
-    window.clearTimeout(timer);
-  }
-}
-
 export const AuthView = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const { setOnboarded } = useStore();
+  const { setOnboarded, setSession } = useStore();
 
   const { register, handleSubmit, formState: { errors }, watch, reset } = useForm();
 
@@ -44,22 +20,21 @@ export const AuthView = () => {
     let authError = null;
 
     try {
-      const reachable = await checkSupabaseReachable();
-      if (!reachable) {
-        toast.error('Cannot reach Supabase from this network. Please switch network/VPN and try again.');
-        return;
-      }
-
       // Clean stale local auth state before a fresh attempt.
       clearSupabaseLocalSession();
       await supabase.auth.signOut({ scope: 'local' });
 
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data: authData, error } = await supabase.auth.signInWithPassword({
           email: data.email,
           password: data.password,
         });
         authError = error;
+        // Apply session immediately so the app gate does not render the dashboard before Zustand has a user id
+        // (otherwise claims would only update locally and never reach Supabase).
+        if (!error && authData.session) {
+          setSession(authData.session);
+        }
       } else {
         const { error } = await supabase.auth.signUp({
           email: data.email,
@@ -81,17 +56,21 @@ export const AuthView = () => {
       }
 
       if (authError) {
-        toast.error(authError.message);
+        if (/email not confirmed/i.test(authError.message)) {
+          toast.error('Please verify your email first, then sign in.');
+        } else {
+          toast.error(authError.message);
+        }
       } else if (isLogin) {
         toast.success('Welcome back!');
         setOnboarded(true); // Assuming login signals onboarding is complete
       }
     } catch (err: any) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      if (/failed to fetch|lock|timed out/i.test(message)) {
-        toast.error('Supabase network request timed out. Please retry on a different network or disable VPN/proxy.');
+      if (/failed to fetch|network|timed out|cors/i.test(message)) {
+        toast.error('Network issue while contacting Supabase. Check internet/VPN/firewall and retry.');
       } else {
-        toast.error('An unexpected error occurred.');
+        toast.error(message || 'An unexpected error occurred.');
       }
     } finally {
       setIsLoading(false);
