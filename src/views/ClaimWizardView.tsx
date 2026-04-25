@@ -4,6 +4,7 @@ import {
   FileText,
   Check,
   ChevronRight,
+  ChevronLeft,
   ArrowLeft,
   Download,
   Share2,
@@ -320,19 +321,23 @@ export const ClaimWizardView = () => {
 
   return (
     <div className="flex min-h-full w-full flex-col bg-background">
+      <header className="sticky top-0 z-40 border-b border-gray-100 bg-background/90 backdrop-blur-md dark:border-white/10">
+        <div className="mx-auto flex max-w-7xl items-center px-6 py-4 lg:px-12">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={goBack}
+              disabled={isProcessing}
+              className="rounded-lg p-1 text-text-main transition-colors hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40"
+              aria-label="Go back"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <h2 className="font-display text-xl font-bold text-text-main dark:text-white">File a Claim</h2>
+          </div>
+        </div>
+      </header>
       <div className="mx-auto w-full max-w-7xl flex-1 px-6 py-10 lg:px-12 lg:py-12">
-        <header className="mb-8 flex items-center gap-4">
-          <button
-            type="button"
-            onClick={goBack}
-            disabled={isProcessing}
-            className="text-navy dark:text-slate-200 disabled:opacity-40"
-            aria-label="Go back"
-          >
-            <ArrowLeft />
-          </button>
-          <h2 className="font-display text-xl font-bold text-text-main">File a Claim</h2>
-        </header>
 
         {showStepper && <StepIndicator currentStep={step} />}
 

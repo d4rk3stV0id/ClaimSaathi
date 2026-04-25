@@ -5,12 +5,31 @@
 export type Language = 'en' | 'hi' | 'ta' | 'te' | 'bn';
 
 export interface User {
+  id?: string;
   name: string;
   phone: string;
   /** Set when user signs in with OAuth/email (optional). */
   email?: string;
   avatar?: string;
   language?: Language;
+  /** ABHA (Ayushman Bharat Health Account) ID — 14 digits. */
+  abhaId?: string;
+  /** Whether ABHA ID has been verified via checksum. */
+  abhaVerified?: boolean;
+  /** Full name from ABHA record. */
+  abhaName?: string;
+  /** Address from ABHA record. */
+  abhaAddress?: string;
+  /** Date of birth from ABHA record (ISO string). */
+  abhaDob?: string;
+  /** Gender from ABHA record. */
+  abhaGender?: string;
+  /** Blood group. */
+  bloodGroup?: string;
+  /** Emergency contact number. */
+  emergencyContact?: string;
+  /** Known allergies. */
+  allergies?: string;
 }
 
 export type ClaimStatus = 'Approved' | 'Pending' | 'Rejected' | 'Submitted' | 'Verified' | 'Review';

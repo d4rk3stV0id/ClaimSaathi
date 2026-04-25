@@ -40,8 +40,10 @@ export const PolicyReaderView = () => {
   const [chatInput, setChatInput] = useState('');
   const [chatSending, setChatSending] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [showInfoTooltip, setShowInfoTooltip] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const speechSessionRef = useRef<{ stop: () => void } | null>(null);
+  const infoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     return () => {
@@ -205,13 +207,28 @@ export const PolicyReaderView = () => {
             </button>
             <h2 className="font-display text-xl font-bold text-text-main dark:text-white">My Policy</h2>
           </div>
-          <button
-            type="button"
-            className="rounded-lg p-2 text-text-muted transition-colors hover:bg-gray-100 dark:hover:bg-white/10"
-            aria-label="Info"
-          >
-            <Info className="h-5 w-5" />
-          </button>
+          <div className="relative" ref={infoRef}>
+            <button
+              type="button"
+              onClick={() => setShowInfoTooltip((v) => !v)}
+              className="rounded-lg p-2 text-text-muted transition-colors hover:bg-gray-100 dark:hover:bg-white/10"
+              aria-label="Info"
+            >
+              <Info className="h-5 w-5" />
+            </button>
+            {showInfoTooltip && (
+              <div className="absolute right-0 top-11 z-50 w-72 rounded-xl border border-gray-100 bg-white p-4 shadow-elevated dark:border-white/10 dark:bg-navy-light">
+                <h4 className="text-sm font-bold text-text-main dark:text-white mb-2">Policy Reader</h4>
+                <ul className="space-y-2 text-xs text-text-muted leading-relaxed">
+                  <li>• Upload your insurance policy PDF or a clear photo to get an AI-powered summary.</li>
+                  <li>• Once analyzed, you can see what's covered, exclusions, and sum insured.</li>
+                  <li>• Use the "Ask about my policy" button to chat and ask questions in your preferred language.</li>
+                  <li>• Supports PDF, JPG, and PNG files.</li>
+                </ul>
+                <button type="button" onClick={() => setShowInfoTooltip(false)} className="mt-3 text-[11px] font-bold text-primary hover:underline">Got it</button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -246,7 +263,7 @@ export const PolicyReaderView = () => {
                 <div className="rounded-full bg-primary px-8 py-3 text-sm font-bold text-white shadow-glow">Select file</div>
                 
                 {/* Simulated rotating border effect using CSS animation (defined in index.css or inline) */}
-                <div className="absolute inset-0 border-2 border-dashed border-primary/20 rounded-lg pointer-events-none animate-[spin_60s_linear_infinite]" />
+                <div className="absolute inset-[-1px] border-2 border-dashed border-primary/20 rounded-xl pointer-events-none" />
               </div>
 
               {/* Tips Section */}
