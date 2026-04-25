@@ -7,6 +7,7 @@ This repository is also published as **[MicroSwiftAuto_AI](https://github.com/d4
 ---
 
 ## Features
+## Run Locally
 
 - **Sign in / sign up** — Email & password via Supabase Auth (when Supabase env vars are set).
 - **Policy reader** — Upload a PDF or image; Gemini extracts coverage, limits, exclusions, and disclaimers.
