@@ -2,8 +2,6 @@
 
 **ClaimSaathi** is a web app that helps people understand health insurance policies and prepare insurance claims: upload a policy for AI-assisted coverage summaries, walk through a guided claim flow with document analysis, and (optionally) sync policies and claims to **Supabase** after sign-in.
 
-This repository is also published as **[MicroSwiftAuto_AI](https://github.com/d4rk3stV0id/MicroSwiftAuto_AI)** on GitHub.
-
 ---
 
 ## Features
