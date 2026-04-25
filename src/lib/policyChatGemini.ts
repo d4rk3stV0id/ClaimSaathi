@@ -4,6 +4,9 @@ import { buildGeminiModelFallbackChain, isRetryableGeminiModelError } from './ge
 import type { PolicyChatTurn } from './policyChat';
 
 function envStr(name: string): string | undefined {
+  if (name === 'GEMINI_API_KEY') return typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined;
+  if (name === 'GEMINI_POLICY_CHAT_MODEL') return typeof process !== 'undefined' ? process.env.GEMINI_POLICY_CHAT_MODEL : undefined;
+  
   const p =
     typeof process !== 'undefined'
       ? (process as unknown as { env?: Record<string, string | undefined> }).env

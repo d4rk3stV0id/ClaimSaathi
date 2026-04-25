@@ -7,6 +7,9 @@ import { parseJsonFromModelText } from './openaiClient';
 const MAX_POLICY_BYTES = 14 * 1024 * 1024;
 
 function envStr(name: string): string | undefined {
+  if (name === 'GEMINI_API_KEY') return typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined;
+  if (name === 'GEMINI_POLICY_ANALYSIS_MODEL') return typeof process !== 'undefined' ? process.env.GEMINI_POLICY_ANALYSIS_MODEL : undefined;
+  
   const p =
     typeof process !== 'undefined'
       ? (process as unknown as { env?: Record<string, string | undefined> }).env

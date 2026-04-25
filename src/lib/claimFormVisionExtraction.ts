@@ -23,6 +23,12 @@ const VISION_JPEG_QUALITY = 0.86;
 const OPENAI_CLAIM_MODEL_FALLBACKS = ['gpt-4.1-mini', 'gpt-4o-mini'];
 
 function envStr(name: string): string | undefined {
+  if (name === 'GEMINI_API_KEY') return typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined;
+  if (name === 'OPENAI_API_KEY') return typeof process !== 'undefined' ? process.env.OPENAI_API_KEY : undefined;
+  if (name === 'CLAIM_VISION') return typeof process !== 'undefined' ? process.env.CLAIM_VISION : undefined;
+  if (name === 'GEMINI_CLAIM_MODEL') return typeof process !== 'undefined' ? process.env.GEMINI_CLAIM_MODEL : undefined;
+  if (name === 'OPENAI_CLAIM_MODEL') return typeof process !== 'undefined' ? process.env.OPENAI_CLAIM_MODEL : undefined;
+
   const p =
     typeof process !== 'undefined'
       ? (process as unknown as { env?: Record<string, string | undefined> }).env
