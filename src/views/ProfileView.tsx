@@ -369,7 +369,7 @@ export const ProfileView = () => {
             <div className="flex items-center gap-5">
               <div className="w-20 h-20 rounded-full border-4 border-primary/20 p-0.5 shrink-0">
                 <img
-                  src={editAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${editName || 'User'}`}
+                  src={editAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(editName || 'User')}`}
                   alt="Selected avatar"
                   className="w-full h-full rounded-full bg-gray-100 dark:bg-slate-800"
                 />
