@@ -5,6 +5,14 @@ import { Session } from '@supabase/supabase-js';
 import { fetchClaimsForUser, fetchPolicyForUser, insertClaimForUser, upsertPolicyForUser } from '../lib/claimsaathiDb';
 import { isSupabaseEnabled } from '../lib/supabase';
 
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
+}
+
 interface AppState {
   user: User | null;
   session: Session | null;
@@ -13,6 +21,7 @@ interface AppState {
   /** Raw upload kept in memory for Policy Saathi Q&A (not persisted). */
   policyDocument: { base64: string; mimeType: string; extractedText?: string } | null;
   claims: Claim[];
+  notifications: Notification[];
   language: Language;
   onboarded: boolean;
   currentTab: 'home' | 'policy' | 'claims' | 'profile';
@@ -28,25 +37,53 @@ interface AppState {
   clearActivePolicy: () => void;
   addClaim: (claim: Claim) => void;
   toggleTheme: () => void;
+  updateUserProfile: (fields: Partial<User>) => void;
+  markNotificationRead: (id: string) => void;
+  markAllNotificationsRead: () => void;
+}
+
+/** Keys persisted to localStorage for user profile. */
+const USER_PROFILE_KEY = 'claimsaathi-user-profile';
+
+function loadSavedUserProfile(): User | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(USER_PROFILE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function saveUserProfile(user: User | null) {
+  if (typeof window === 'undefined') return;
+  if (user) {
+    localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(user));
+  } else {
+    localStorage.removeItem(USER_PROFILE_KEY);
+  }
 }
 
 export const useStore = create<AppState>((set) => {
   const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('claimsaathi-theme') : 'light';
   const initialTheme = (savedTheme === 'dark' || savedTheme === 'light') ? savedTheme : 'light';
+  const savedUser = loadSavedUserProfile();
 
   return {
-    user: null,
+    user: savedUser,
     session: null,
     isAuthenticated: false,
     activePolicy: null,
     policyDocument: null,
     claims: [],
+    notifications: [],
     language: 'en',
     onboarded: false,
     currentTab: 'home',
     theme: initialTheme,
 
-    setUser: (user) => set({ user }),
+    setUser: (user) => {
+      saveUserProfile(user);
+      set({ user });
+    },
     setSession: (session) => {
       let mappedUser = null;
       if (session?.user) {
@@ -57,10 +94,14 @@ export const useStore = create<AppState>((set) => {
           phone: session.user.user_metadata?.phone || '',
         };
       }
+      // Merge with any saved local profile so we don't lose ABHA/medical info on re-login
+      const savedLocal = loadSavedUserProfile();
+      const mergedUser = mappedUser ? { ...savedLocal, ...mappedUser } : savedLocal;
+      if (mergedUser) saveUserProfile(mergedUser);
       set({ 
         session, 
         isAuthenticated: !!session,
-        user: mappedUser,
+        user: mergedUser,
         ...(session ? {} : { activePolicy: null, policyDocument: null, claims: [] }),
       });
     },
@@ -111,5 +152,19 @@ export const useStore = create<AppState>((set) => {
       localStorage.setItem('claimsaathi-theme', newTheme);
       return { theme: newTheme };
     }),
+    updateUserProfile: (fields) => set((state) => {
+      const base = state.user || { name: 'User', phone: '', email: '' };
+      const updated = { ...base, ...fields };
+      saveUserProfile(updated);
+      return { user: updated };
+    }),
+    markNotificationRead: (id) => set((state) => ({
+      notifications: state.notifications.map((n) =>
+        n.id === id ? { ...n, read: true } : n,
+      ),
+    })),
+    markAllNotificationsRead: () => set((state) => ({
+      notifications: state.notifications.map((n) => ({ ...n, read: true })),
+    })),
   };
 });

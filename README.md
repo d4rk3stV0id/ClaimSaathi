@@ -5,14 +5,38 @@
 ---
 
 ## Features
-## Run Locally
 
-- **Sign in / sign up** — Email & password via Supabase Auth (when Supabase env vars are set).
-- **Policy reader** — Upload a PDF or image; Gemini extracts coverage, limits, exclusions, and disclaimers.
-- **Policy Saathi** — Chat about your uploaded policy (multilingual replies follow the app language where supported).
-- **File a claim** — Upload hospital bill, discharge summary, ID proof, and insurer claim form; AI suggests field values and can fill **fillable PDF** forms when AcroForm fields are detected.
-- **Dashboard & profile** — Recent claims, theme (light/dark), language preference, and sign-out.
-- **Cloud sync** — With Supabase configured, analyzed policies and filed claims are stored under the signed-in user (row-level security).
+### 📋 Policy Management
+- **AI Policy Reader** — Upload a PDF or image of your insurance policy; Gemini extracts coverage amounts, limits, exclusions, and disclaimers into a clean summary.
+- **Policy Saathi Chat** — Ask natural-language questions about your uploaded policy (multilingual replies where supported).
+- **ABHA-Linked Policy Fetch** — Verify your 14-digit ABHA ID (Verhoeff checksum validation) and securely retrieve linked insurance details via a consent-based ABDM flow.
+
+### 🏥 Claims
+- **Guided Claim Wizard** — Upload hospital bill, discharge summary, ID proof, and insurer claim form; AI suggests field values and can fill **fillable PDF** forms when AcroForm fields are detected.
+- **Claims Tracking** — View all filed claims with status badges (Approved, Pending, Rejected) from the dashboard and profile.
+
+### 👤 User Profile & Health Records
+- **Profile Customization** — Edit name, phone, email, blood group, emergency contact, allergies, and select from 5 default avatar options. All data persists to localStorage.
+- **ABHA ID Verification** — Enter and verify your Ayushman Bharat Health Account ID with Verhoeff checksum validation.
+- **E-Health Card** — View a digital health card with ABHA details, blood group, emergency contact, and allergies.
+- **Digital Health Records** — Past claims history and diagnostic reports displayed on the E-Health Card page.
+- **Government Scheme Eligibility** — Information on PM-JAY, PMSBY, and PMJJBY schemes based on ABHA registration.
+
+### 🏠 Dashboard & UX
+- **Interactive Hero** — Hospital-themed plus symbols on a non-overlapping grid that react to mouse movement with parallax drift and proximity scaling — even when the cursor is outside the hero area.
+- **Smart Actions** — Three quick-access buttons: "My Policy & Ask AI", "File a Claim", and "My Claims".
+- **Notification System** — Bell icon with popup dropdown; badge only appears when unread notifications exist.
+- **Dark / Light Theme** — Toggle from the profile settings; persisted to localStorage.
+- **Multilingual** — English, Hindi, Tamil, Telugu, and Bangla language preference.
+
+### ⚙️ Platform
+- **Cloud Sync** — With Supabase configured, policies and claims are stored under the signed-in user (RLS).
+- **Authentication** — Email & password via Supabase Auth (when env vars are set).
+- **Offline-First Profile** — User profile data persists to localStorage even without Supabase.
+
+---
+
+## Run Locally
 
 ---
 
